@@ -5,17 +5,9 @@ import Dashboard from '../components/Dashboard';
 import EntryForm from '../components/EntryForm';
 import HistoryList from '../components/HistoryList';
 import apiService from '../services/apiService';
-
-interface Entry {
-  id: string;
-  type: 'income' | 'expense';
-  amount: number;
-  category?: string;
-  date: string;
-}
+import { Entry } from '../types'; // Use central types
 
 const DashboardPage: React.FC = () => {
-  const [entries, setEntries] = useState<Entry[]>([]);
   const [dailySummary, setDailySummary] = useState({
     dailyEarnings: 0,
     dailyExpenses: 0,
@@ -30,11 +22,9 @@ const DashboardPage: React.FC = () => {
   const loadData = async () => {
     try {
       const allEntries = await apiService.getEntries();
-      setEntries(allEntries);
       calculateDailySummary(allEntries);
     } catch (error) {
       console.error('Failed to load entries', error);
-      // Handle logout or token refresh if token is invalid
     }
   };
 

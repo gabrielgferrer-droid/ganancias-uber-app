@@ -1,17 +1,5 @@
 import { supabase } from '../lib/supabaseClient';
-
-interface Entry {
-  id?: number;
-  date: string;
-  type: 'income' | 'expense';
-  amount: number;
-  category?: string;
-}
-
-interface User {
-    id: string;
-    email: string;
-}
+import { Entry, User } from '../types'; // Use central types
 
 interface AuthResponse {
     session: {
@@ -20,7 +8,7 @@ interface AuthResponse {
     user: User;
 }
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 const AUTH_TOKEN_KEY = 'drivers-ledger-token';
 
 const getAuthToken = (): string | null => {
@@ -64,12 +52,11 @@ const apiService = {
     if (error) {
       throw new Error(error.message);
     }
-    // Supabase handles the redirect, so no direct return value here
   },
 
   logout(): void {
     localStorage.removeItem(AUTH_TOKEN_KEY);
-    supabase.auth.signOut(); // Also sign out from Supabase client
+    supabase.auth.signOut();
   },
 
   isAuthenticated(): boolean {
@@ -90,7 +77,7 @@ const apiService = {
     return data;
   },
 
-  async addEntry(entry: Omit<Entry, 'id'>): Promise<Entry> {
+  async addEntry(entry: Omit<Entry, 'id' | 'user_id' | 'created_at'>): Promise<Entry> {
     const token = getAuthToken();
     if (!token) throw new Error('Not authenticated');
 

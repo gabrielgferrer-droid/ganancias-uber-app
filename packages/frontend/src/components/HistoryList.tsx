@@ -1,13 +1,6 @@
 import React from 'react';
 import { Card, ListGroup, Badge } from 'react-bootstrap';
-
-interface Entry {
-  id: string;
-  type: 'income' | 'expense';
-  amount: number;
-  category?: string;
-  date: string;
-}
+import { Entry } from '../types'; // Use central types
 
 interface HistoryListProps {
   entries: Entry[];
